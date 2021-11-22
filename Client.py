@@ -1,13 +1,13 @@
-# Import socket module
-import socket, ServerAux, pickle
-import tkinter as tk
-from time import *
+import socket, pickle
+from ServerAux import *
 
 
 sock = socket.socket()
+clients = list()
+
 def login(port, name):
-    global sock
-    clients = list()
+    global sock, clients
+    
      
     # Create a socket object
     sock = socket.socket()        
@@ -15,47 +15,48 @@ def login(port, name):
     # Define the port on which you want to connect
     port = 12340 + int(port)
      
-    # connect to the server on local computer
+    # Connect to the server 
     sock.connect(('127.0.0.1', port))
-    user = name.strip()
     public =1
-    sock.sendall( (user + "-" + str(public) ).encode('UTF-8') )
-    print(sock.recv(32).decode())
 
-def send_to( name, message):
-    global sock
-    
-    sock.sendall(pickle.dumps([ "<Encrypted>", name, message]))
-    print("sent")
-    #data  = sock.recv(2048)
+    #Sending our info
+    current_user = user( name =  name.strip(), public_key = public,  sock = sock ) 
+    sock.sendall( pickle.dumps(current_user) )
 
-    #print(pickle.loads(data))
-    
-def recive():
+    #Seeing if it accepts us
+    ser_response = sock.recv(32).decode()
+    if ser_response == "Welcom To Tinfoil Chat":
+        print(ser_response)
+        return True
+    else:
+        return False
+
+
+def send_to( recipient, content):
     global sock
+
+    to_send = message(content,   "<Encrypted>",  "nick", recipient )
+    sock.sendall(pickle.dumps(to_send))  # TO DO FIX USER
+
+def receive_data():
+    global sock, clients
+
     while True:
-
-       # try:
-            #msg = sock.recv(20).decode()
-            #print(msg)
-            #if msg != "":
-                
-                #return msg
-                
-            
         data = pickle.loads(sock.recv(2048))
+
+        if isinstance(data, message):
+            if data.flag == "<Encrypted>":
+                return data
+
+        if isinstance(data, list):
+            return data
+
+            
         
-        print(data)
-        if data[0] == "<Encrypted>":
-          return data[2]
-        #except:
-            #pass
-            #print("whooops")
 
-
-
+        
 def get_users():
-    sock.sendall(pickle.dumps(["<Get Users>"]) )
-    clients = pickle.loads(sock.recv(2048))
-    print(clients)
+    sock.sendall(pickle.dumps(message("", "<Get Users>", "nick",  "")) )
+    #return pickle.loads(sock.recv(2048))
+
 
