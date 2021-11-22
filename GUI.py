@@ -1,6 +1,7 @@
 import tkinter as tk
 from Client import *
 import threading
+from time import sleep
 from tkinter import *
 
 
@@ -54,13 +55,16 @@ class chat_app:
 
 
 
+            while True:
 
-            get_users()
-            if isinstance( new_list := receive_data(), set):
-                for idx, val in enumerate(new_list):
-                    userbox.insert(idx + 1, val.name )
-                    clients = new_list
-                    print("clients asdf")
+                get_users()
+                if isinstance( new_list := receive_data(), set):
+                    if (len(new_list) !=  clients ):
+                        for idx, val in enumerate(new_list):
+                            userbox.insert(idx + 1, val.name )
+                            clients = new_list
+                            print("clients asdf")
+                sleep(1)
 
 
 
