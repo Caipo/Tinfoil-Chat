@@ -28,16 +28,17 @@ def get_connection():
 
     #Welcom Waggon
     client_sock.sendall(b"Welcom To Tinfoil Chat" )
-    clients.append(data)
+    clients.add(data)
+    print(clients)
     Thread(target = get_message, args = (data,)).start()
     print(data.name+ " has connected")
+
 
 def get_message(client):
     global clients
     print("get message running")
 
     while client in clients:
-
 
       try:
           data = pickle.loads(client.sock.recv(2048))
@@ -47,10 +48,14 @@ def get_message(client):
             print("gibing clinets")
             client.sock.sendall(   pickle.dumps(clients )    )
 
+          elif data.flag == "<Close>":
+              print(client.name, " Has Disconnecte")
+              client.sock.close()
+              clients.remove(client)
+              print(clients)
+              return
 
-            
-          print(data.flag ==  "<Encrypted>")
-          if data.flag == "<Encrypted>":
+          elif data.flag == "<Encrypted>":
             
             flag = False
             for user in clients:
@@ -59,7 +64,10 @@ def get_message(client):
                     print("forwarding")
                     user.sock.sendall( pickle.dumps(data) )
                     flag = True
-                    
+
+
+
+
             if not flag:
               client.sock.sendall(  pickle.dumps(message("Could Not Find User", "<Server>" , "Server", data.author)))
             
@@ -69,18 +77,20 @@ def get_message(client):
           client.sock.close()
           clients.remove(client)
           print(clients)
-
           return
 
 
 
 if __name__ == "__main__":
   #Opening connections
-  sock, port = socket.socket(), 12340 + randint(0, 9)
-  sock.bind(('', port))        
-  print ("socket binded to %s" %(port))
+  sock = socket.socket()
+  port = 12340 + randint(0, 9)
+  ip = '192.168.1.68'
+  sock.bind(('192.168.1.68', port))
+  print(f"{ip} : {port}")
+
   
-  clients = list()
+  clients = set()
 
   #Threading for new connections
   print_lock = Lock()
@@ -90,7 +100,6 @@ if __name__ == "__main__":
 
   #Main Loop
   while True:
-      
       if not new_con.is_alive():
           new_con = Thread(target = get_connection, args = ())
           new_con.start()

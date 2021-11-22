@@ -22,6 +22,9 @@ class user():
             return self.name == other.name and self.sock == other.sock
         return false
 
+    def __hash__(self):
+        return id(self)
+
     def __getitem__():
         pass
 

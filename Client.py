@@ -3,21 +3,26 @@ from ServerAux import *
 
 
 sock = socket.socket()
-clients = list()
+clients = set()
+current_user = ""
 
-def login(port, name):
-    global sock, clients
+def logout(author):
+    sock.send( pickle.dumps( message( "", "<Close>" , author) ))
+
+def login(port, name, ip):
+    global sock, clients, current_user
     
      
     # Create a socket object
     sock = socket.socket()        
      
     # Define the port on which you want to connect
-    port = 12340 + int(port)
+    port = int(port)
+    ip = str(ip)
      
     # Connect to the server 
-    sock.connect(('127.0.0.1', port))
-    public =1
+    sock.connect((ip, port))
+    public = 1
 
     #Sending our info
     current_user = user( name =  name.strip(), public_key = public,  sock = sock ) 
@@ -25,6 +30,7 @@ def login(port, name):
 
     #Seeing if it accepts us
     ser_response = sock.recv(32).decode()
+
     if ser_response == "Welcom To Tinfoil Chat":
         print(ser_response)
         return True
@@ -33,10 +39,15 @@ def login(port, name):
 
 
 def send_to( recipient, content):
-    global sock
+    global sock, current_user
 
-    to_send = message(content,   "<Encrypted>",  "nick", recipient )
-    sock.sendall(pickle.dumps(to_send))  # TO DO FIX USER
+    if not isinstance(current_user, str):
+        to_send = message(content,   "<Encrypted>",  current_user.name, recipient )
+        sock.sendall(pickle.dumps(to_send))  # TO DO FIX USER
+
+    else:
+        print("Didnt make current user")
+        return
 
 def receive_data():
     global sock, clients
@@ -48,7 +59,7 @@ def receive_data():
             if data.flag == "<Encrypted>":
                 return data
 
-        if isinstance(data, list):
+        if isinstance(data, set):
             return data
 
             
@@ -56,7 +67,12 @@ def receive_data():
 
         
 def get_users():
-    sock.sendall(pickle.dumps(message("", "<Get Users>", "nick",  "")) )
+    global current_user
+    if not isinstance(current_user, str):
+        sock.sendall(pickle.dumps(message("", "<Get Users>", current_user.name,  "")) )
+    else:
+        print("Didnt make current user")
+        return
     #return pickle.loads(sock.recv(2048))
 
 
