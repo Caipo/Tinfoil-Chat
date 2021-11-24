@@ -1,5 +1,6 @@
 from Client import *
 import threading
+from datetime import datetime
 from time import sleep
 import tkinter as tk
 
@@ -41,7 +42,9 @@ class chat_app:
         global clients
 
         if isinstance( new_list, set):
-            if (len(new_list) !=  len(clients) ):
+
+            if (new_list !=  clients ):
+                self.userbox.delete(0, tk.END)
                 for idx, val in enumerate(new_list):
                     self.userbox.insert(idx + 1, val.name )
                     clients = new_list
@@ -50,7 +53,7 @@ class chat_app:
 
     def update_chat_log(self, new_msg):
         if isinstance(new_msg, message):
-            self.message_box.insert(tk.END, f"{new_msg.author}:{new_msg.time}")
+            self.message_box.insert(tk.END, f"{new_msg.author} : { str(datetime.fromtimestamp(new_msg.time).time())[0:5]}"  )
             self.message_box.insert(tk.END, f"{new_msg.content}")
             self.message_box.insert(tk.END, "")
 
@@ -210,7 +213,7 @@ class login_window():
 if __name__ == "__main__":
 
     root = tk.Tk()
-    login(12344, "nick", '192.168.1.68')
+    login(12344, "blip", '192.168.1.68')
     chat_app(root)
     root.title('Tin Foil Chat')
 
