@@ -15,7 +15,7 @@ def get_connection():
     client_sock, addr = sock.accept()    
     print ('Got connection from', addr )
 
-    data = pickle.loads(client_sock.recv(2048)) #
+    data = pickle.loads(client_sock.recv(2048))
     data.set_sock(client_sock)
 
     for client in clients:
@@ -57,20 +57,16 @@ def get_message(client):
 
           elif data.flag == "<Encrypted>":
             
-            flag = False
+
             for user in clients:
-                print(data.recipient, user.name)
-                if data.recipient == user.name:
-                    print("forwarding")
-                    user.sock.sendall( pickle.dumps(data) )
-                    flag = True
+
+
+                user.sock.sendall( pickle.dumps(data) )
 
 
 
 
-            if not flag:
-              client.sock.sendall(  pickle.dumps(message("Could Not Find User", "<Server>" , "Server", data.author)))
-            
+
       
       except:
           print(client.name , " Has Disconnecte")
@@ -86,7 +82,7 @@ if __name__ == "__main__":
   sock = socket.socket()
   port = 12340 + randint(0, 9)
   ip = '192.168.1.68'
-  sock.bind(('192.168.1.68', port))
+  sock.bind((ip, port))
   print(f"{ip} : {port}")
 
   

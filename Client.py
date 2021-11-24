@@ -1,4 +1,4 @@
-import socket, pickle
+import socket, pickle, sys
 from ServerAux import *
 
 
@@ -20,7 +20,7 @@ def login(port, name, ip):
     port = int(port)
     ip = str(ip)
      
-    # Connect to the server 
+    # Connect to the server
     sock.connect((ip, port))
     public = 1
 
@@ -41,38 +41,36 @@ def login(port, name, ip):
 def send_to( recipient, content):
     global sock, current_user
 
-    if not isinstance(current_user, str):
-        to_send = message(content,   "<Encrypted>",  current_user.name, recipient )
-        sock.sendall(pickle.dumps(to_send))  # TO DO FIX USER
+    try:
+        if not isinstance(current_user, str):
+            to_send = message(content,   "<Encrypted>",  current_user.name, recipient )
+            sock.sendall(pickle.dumps(to_send))  # TO DO FIX USER
+    except AttributeError:
+        print("Failed to make user")
 
-    else:
-        print("Didnt make current user")
-        return
+
 
 def receive_data():
     global sock, clients
+
+
 
     while True:
         data = pickle.loads(sock.recv(2048))
 
         if isinstance(data, message):
-            if data.flag == "<Encrypted>":
-                return data
+            return data
 
         if isinstance(data, set):
             return data
 
-            
-        
-
-        
 def get_users():
     global current_user
-    if not isinstance(current_user, str):
+    try:
+
         sock.sendall(pickle.dumps(message("", "<Get Users>", current_user.name,  "")) )
-    else:
-        print("Didnt make current user")
-        return
-    #return pickle.loads(sock.recv(2048))
+    except AttributeError:
+        print("Failed to make user")
+
 
 

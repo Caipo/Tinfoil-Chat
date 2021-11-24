@@ -1,8 +1,7 @@
-import tkinter as tk
 from Client import *
 import threading
 from time import sleep
-from tkinter import *
+import tkinter as tk
 
 
 gunmetal =  "#1B2432"
@@ -16,25 +15,56 @@ tea_green = "#D7EBBA"
 class chat_app:
 
     def onselect(self, evt):
+
         try:
             w = evt.widget
             index = int(w.curselection()[0])
             value = w.get(index)
             self.str_label.set(value)
             self.seleced_user = value
-            print( "You selected item ", value)
 
-        except:
+
+        # Caused by clicking non clickabuls not a problem
+        except IndexError:
             pass
 
-    def update_chat_log(self):
-        """Handles receiving of messages."""
+
+
+
+
+    def ask_for_users(self):
         while True:
-            
-            new_msg = receive_data()
-            if isinstance(new_msg, message):
-                print(new_msg.content)
-                self.message_box.insert(tk.END,  f"{new_msg.content}")
+            get_users()
+            sleep(5)
+
+    def update_users(self, new_list):
+        global clients
+
+        if isinstance( new_list, set):
+            if (len(new_list) !=  len(clients) ):
+                for idx, val in enumerate(new_list):
+                    self.userbox.insert(idx + 1, val.name )
+                    clients = new_list
+
+
+
+    def update_chat_log(self, new_msg):
+        if isinstance(new_msg, message):
+            self.message_box.insert(tk.END, f"{new_msg.author}:{new_msg.time}")
+            self.message_box.insert(tk.END, f"{new_msg.content}")
+            self.message_box.insert(tk.END, "")
+
+    # Sorts the user list form the messages
+    def handle_data(self):
+        while True:
+            data = receive_data()
+            if isinstance(data, message):
+                self.update_chat_log(data)
+
+            if isinstance(data, set):
+                self.update_users( data)
+
+
 
 
 
@@ -49,83 +79,56 @@ class chat_app:
 
     def __init__(self, root):
 
-
-        def update_users():
-            global clients
-
-
-
-            while True:
-
-                get_users()
-                if isinstance( new_list := receive_data(), set):
-                    if (len(new_list) !=  clients ):
-                        for idx, val in enumerate(new_list):
-                            userbox.insert(idx + 1, val.name )
-                            clients = new_list
-                            print("clients asdf")
-                sleep(1)
+        # Update the server users
+        self.seleced_user = "" # Will be changed as soon as a user is clicked
+        userbox = tk.Listbox(root, background = gunmetal, fg = shiny_shamrock, selectbackground = tea_green, )
+        userbox.pack(side="left", fill="y", anchor="w")
+        userbox.bind('<<ListboxSelect>>', self.onselect)
+        self.userbox = userbox
 
 
 
-
-
-        self.seleced_user = ""
-        userbox = Listbox(root, background = gunmetal, fg = shiny_shamrock, selectbackground = tea_green, )
-
-
-
-        message_frame = Frame(bg = "blue")
+        message_frame = tk.Frame(bg = "blue")
         message_frame.pack(side ="right", fill = "both",  expand = True, anchor = "w")
 
 
-        self.str_label = StringVar()
-        user_label = Label(message_frame, bd = 0,bg = dark_liver, textvariable = self.str_label, font=("Arial", 16), fg = shiny_shamrock)
+        # Tells us whom where talking to
+        self.str_label = tk.StringVar()
+        user_label = tk.Label(message_frame, bd = 0,bg = dark_liver, textvariable = self.str_label, font=("Arial", 16), fg = shiny_shamrock)
         self.str_label.set("")
         user_label.pack(side = "top", fill = "both", anchor = "n", expand = False)
 
 
-
-        message_box = Listbox(message_frame ,  bd = 0, background = dark_liver, fg = bone, width = 50)
+        # All the messages
+        message_box = tk.Listbox(message_frame ,  bd = 0, background = dark_liver, fg = bone, width = 50)
         message_box.pack(  fill = "both" , expand= True , anchor = "w")
-
-
-
         self.message_box = message_box
-        
-        send_box = Entry(message_frame,  background = bone, fg = gunmetal)
+
+
+        # Send box in the chat app
+        send_box = tk.Entry(message_frame,  background = bone, fg = gunmetal)
         send_box.pack(side = "bottom", fill = "both", anchor = "s")
         self.send_box = send_box
 
         def gui_send(event, seleced_user):
             send_to(seleced_user, send_box.get())
-            send_box.delete(0, END)
+            send_box.delete(0, tk.END)
 
         root.bind('<Return>',  lambda e : gui_send( e,self.seleced_user))
-        
-        receive_thread = threading.Thread(target=self.update_chat_log)
-        receive_thread.start()
-
-        print(clients, "in the init")
-
-        users_thread = threading.Thread(target=update_users)
-        users_thread.start()
-
-
-        
-        
-        userbox.pack(side = "left", fill = "y", anchor = "w")
-        userbox.bind('<<ListboxSelect>>', self.onselect)
-        receive_thread = threading.Thread(target= update_users)
-        receive_thread.start()
 
 
 
 
+        # Asks the server whoms online
+        ask_users_thread = threading.Thread(target=self.handle_data)
+        ask_users_thread.start()
+
+        # Keeps getting the data from the server and handles it
+        handle_data = threading.Thread(target= self.ask_for_users   )
+        handle_data.start()
 
 
 
-    
 
 
 
@@ -147,7 +150,7 @@ class login_window():
             try:
                 if login(port, name, ip ):
                     root.destroy()
-                    root2 = Tk()
+                    root2 = tk.Tk()
                     root2.title =  "Tin Foil Chat"
                     chat_app(root2)
 
@@ -166,7 +169,7 @@ class login_window():
           
         # declaring string variable
         # for storing name and portord
-        name_var=tk.StringVar()
+        name_var= tk.StringVar()
         ip_var = tk.StringVar()
         port_var=tk.StringVar()
          
@@ -207,7 +210,8 @@ class login_window():
 if __name__ == "__main__":
 
     root = tk.Tk()
-    login_window(root)
+    login(12344, "nick", '192.168.1.68')
+    chat_app(root)
     root.title('Tin Foil Chat')
 
     while True:

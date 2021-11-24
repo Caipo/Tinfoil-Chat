@@ -28,6 +28,16 @@ class user():
     def __getitem__():
         pass
 
+class gui_user():
+
+    def __init__(self, user):
+        self.name = user.name
+        self.public_key = user.public_key
+
+
+
+
+
 
 class message():
 
@@ -37,6 +47,5 @@ class message():
             self.author = author
             self.recipient = recipient
             self.time = datetime.timestamp(datetime.now())
-
 
 

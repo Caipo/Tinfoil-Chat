@@ -94,3 +94,8 @@ class RSA:
 
 
 me = RSA(2048)
+
+while True:
+    print(blap := str(input("message")))
+    print( bloop := me.encrypt(blap))
+    print(me.decrypt(bloop))
