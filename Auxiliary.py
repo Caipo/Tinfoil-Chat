@@ -40,7 +40,7 @@ class user():
     def encrypt(self, message, pad = ''):
 
         if isinstance(message, bytes):
-            message = int.from_bytes((message))
+            message = int.from_bytes((message) , byteorder= "little")
             return pow(message, self.e, self.public_key)
 
 
@@ -52,7 +52,7 @@ class user():
             message += pad
 
         message = int(message.encode("utf-8").hex(), 16)
-        return pow(message, self.e, self.public_key)
+        return str(pow(message, self.e, self.public_key))
 
     # cypher == String encyption
     def unsign(self, signature, trim_pad = True):
@@ -106,14 +106,6 @@ def string_to_int( plain_text):
 def int_to_string(num):
     return bytes.fromhex('{:x}'.format(num) ).decode()
 
-if __name__ == "__main__":
-    from RSA import *
-
-    print("Generating RSA")
-    me  = RSA(1028)
-
-    print(me.public_key)
-    print( "Hash it", hash_it(me.public_key))
 
 
 

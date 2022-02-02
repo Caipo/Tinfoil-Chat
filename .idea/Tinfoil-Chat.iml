@@ -5,7 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/venv/Documents" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/n" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.10 (n)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.10 (Tinfoil-Chat)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

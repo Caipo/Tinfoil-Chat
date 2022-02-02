@@ -69,7 +69,7 @@ class RSA:
     def encrypt(self, message, pad =''):
 
         if isinstance(message, bytes):
-            message = int.from_bytes((message), byteorder="little")
+            message = int.from_bytes(message, byteorder="little")
             return pow(message, self.e, self.public_key) #Note this has no padding but we dont need it
 
 
@@ -83,8 +83,6 @@ class RSA:
 
         message = int(message.encode().hex(), 16)
 
-        print( len(str(message) ))
-        print( "in encrypt ", message)
 
         return pow(message, self.e, self.public_key)
 
@@ -92,7 +90,8 @@ class RSA:
     def decrypt(self, cypher, trim_pad = True, is_object = False):
 
         if is_object:
-            cypher = pow(cypher, self.d, self.public_key)
+
+            cypher = pow( int(cypher), self.d, self.public_key)
             return loads(cypher.to_bytes(   int(cypher.bit_length() / 8) + 1 , byteorder='little'))
 
 
@@ -104,19 +103,15 @@ class RSA:
 
         cypher = pow( cypher, self.d, self.public_key)
 
-        try:
-            if trim_pad:
-                return bytes.fromhex('{:x}'.format(cypher)).decode('utf-8')[:-PAD_LENGTH]
-            else:
-                return bytes.fromhex('{:x}'.format(cypher)).decode('utf-8')
 
-        except UnicodeError:
-            print("UNICODE ERROR: possibul message was to long")
+        if trim_pad:
+            return bytes.fromhex('{:x}'.format(cypher)).decode('utf-8')[:-PAD_LENGTH]
+        else:
+            return bytes.fromhex('{:x}'.format(cypher)).decode('utf-8')
+
 
 
     def sign(self, message, pad = ''):
-
-
         if not isinstance(message, str):
             message = str(message)
 

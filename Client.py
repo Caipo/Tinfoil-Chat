@@ -1,5 +1,5 @@
 import socket
-from pickle import dumps, loads
+import pickle as pk
 from Auxiliary import *
 from RSA import *
 
@@ -10,16 +10,17 @@ current_user = ""
 server = ""
 
 
-def logout(author):
-    sock.send( dumps( message( "", "<Close>" , author)))
+
 
 def secure_login(ip, port, server_password):
-    global sock, clients, current_user, my_RSA
+    global sock, clients, current_user, my_RSA, server
 
     # Create a socket object
     sock = socket.socket()
 
+    print("Generating RSA")
     my_RSA = RSA(1024)
+
 
     # Define the port on which you want to connect
     port = int(port)
@@ -30,15 +31,17 @@ def secure_login(ip, port, server_password):
 
     current_user = user("bloop",   my_RSA.public_key, sock)
 
+
+    print("Exchanging Keys")
     #Phase 1 (key echange)
     server_public_key = int(sock.recv(2048).decode())#Getting server public key
     server = user("Server", server_public_key, sock) #Loding our info into object
-    server.sock.sendall( str(my_RSA.public_key).encode()) #Sending our public key
+    server.sock.sendall( str(my_RSA.public_key).encode() ) #Sending our public key
 
     #Phase 2 (Client Verifycation)
 
 
-
+    print("Verifying to server")
     server.sock.sendall( str(server.encrypt( server_password + hash_it(my_RSA.public_key) ) ).encode())  #Sending the password with key hash
     ser_response = my_RSA.decrypt(  int(server.sock.recv(2048).decode('utf-8')) )
 
@@ -48,8 +51,8 @@ def secure_login(ip, port, server_password):
 
 
 
-
-    if my_RSA.decrypt( int(server.sock.recv(2048).decode('utf-8'))) ==server_password + hash_it(str(server_public_key)):
+    print("Sever verifing back")
+    if my_RSA.decrypt( int(server.sock.recv(2048).decode('utf-8'))) == server_password + hash_it(str(server_public_key)):
         current_user = user(name=ser_response.split(" ")[-1], public_key=my_RSA.public_key, sock=sock)
         return True
 
@@ -57,35 +60,40 @@ def secure_login(ip, port, server_password):
 def send_to(recipient, content):
     global sock, current_user
     print("sending")
-    try:
-        if not isinstance(current_user, str):
-            to_send = message(content,   "<Encrypted>",  current_user.name, recipient )
-            sock.sendall(dumps(to_send))  # TO DO FIX USER
 
-    except AttributeError:
-        print("Failed to make user")
+    #Reciving the encrypted data
+
+    encrpted_message = str(server.encrypt( "<message>" + content) )
+    sock.sendall(  (encrpted_message + ":" + str(my_RSA.sign( hash_it( "<message>"+ content)))).encode() )
+
 
 
 
 def receive_data():
-    global sock, clients
-
+    global sock, clients, server
     while True:
-        data = loads(sock.recv(2048))
+        data = (sock.recv(2048)).decode().split(":")
 
-        if isinstance(data, message):
-            return data
+        try:
+            if hash_it(data[0]) == server.unsign(data[1]):
 
-        if isinstance(data, set):
-            return data
+                data = my_RSA.decrypt( data[0], is_object= True )
+                if isinstance(data, message):
+                    return data
+
+                if isinstance(data, set):
+                    return data
+            else:
+                print("Message Authentication Failed")
+
+        except IndexError:
+            pass
+
 
 def get_users():
     global current_user
-    try:
-
-        sock.sendall(dumps(message("", "<Get Users>", current_user.name,  "")) )
-    except AttributeError:
-        print("Failed to make user")
+    encrpted_message = str(server.encrypt("<users>"))
+    sock.sendall( (encrpted_message + ":" + str(my_RSA.sign(hash_it("<users>")))   ).encode())
 
 
 

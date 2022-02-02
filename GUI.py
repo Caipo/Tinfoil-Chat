@@ -14,19 +14,7 @@ tea_green = "#D7EBBA"
 
 
 class chat_app:
-    def onselect(self, evt):
 
-        try:
-            w = evt.widget
-            index = int(w.curselection()[0])
-            value = w.get(index)
-            self.str_label.set(value)
-            self.seleced_user = value
-
-
-        # Caused by clicking non clickabuls not a problem
-        except IndexError:
-            pass
 
     def ask_for_users(self):
         while True:
@@ -35,13 +23,11 @@ class chat_app:
 
     def update_users(self, new_list):
         global clients
-
         if isinstance( new_list, set):
-
             if (new_list !=  clients ):
                 self.userbox.delete(0, tk.END)
                 for idx, val in enumerate(new_list):
-                    self.userbox.insert(idx + 1, val.name )
+                    self.userbox.insert(idx + 1, val )
                     clients = new_list
 
     def update_chat_log(self, new_msg):
@@ -54,48 +40,37 @@ class chat_app:
     def handle_data(self):
         while True:
             data = receive_data()
+
             if isinstance(data, message):
                 self.update_chat_log(data)
 
             if isinstance(data, set):
                 self.update_users( data)
 
-    def on_closing(event=None):
+    def on_closing( event=None ):
         """This function is to be called when the window is closed."""
-        logout()
-        exit()
-            
-
-
+        root.destroy()
 
     def __init__(self, root):
+
+        #root.protocol("WM_DELETE_WINDOW",  lambda e : self.on_closing() )
+        #root.bind('<Escape>', lambda e : self.on_closing(e) )
+        root.title("Tinfoil Chat")
 
         # Update the server users
         self.seleced_user = "" # Will be changed as soon as a user is clicked
         userbox = tk.Listbox(root, background = gunmetal, fg = shiny_shamrock, selectbackground = tea_green, )
         userbox.pack(side="left", fill="y", anchor="w")
-        userbox.bind('<<ListboxSelect>>', self.onselect)
         self.userbox = userbox
-
-
 
         message_frame = tk.Frame(bg = "blue")
         message_frame.pack(side ="right", fill = "both",  expand = True, anchor = "w")
-
-
-        # Tells us whom where talking to
-        self.str_label = tk.StringVar()
-        user_label = tk.Label(message_frame, bd = 0,bg = dark_liver, textvariable = self.str_label, font=("Arial", 16), fg = shiny_shamrock)
-        self.str_label.set("")
-        user_label.pack(side = "top", fill = "both", anchor = "n", expand = False)
-
 
         # All the messages
         message_box = tk.Listbox(message_frame ,  bd = 0, background = dark_liver, fg = bone, width = 50)
         message_box.pack(  fill = "both" , expand= True , anchor = "w")
 
         self.message_box = message_box
-
 
         # Send box in the chat app
         send_box = tk.Entry(message_frame,  background = bone, fg = gunmetal)
@@ -108,9 +83,6 @@ class chat_app:
 
         root.bind('<Return>',  lambda e : gui_send( e,self.seleced_user))
 
-
-
-
         # Asks the server whoms online
         ask_users_thread = Thread(target=self.handle_data)
         ask_users_thread.start()
@@ -122,28 +94,26 @@ class chat_app:
 
 
 
-
-
-
 class login_window():
 
     def __init__(self, root):
         self.root = root
 
-
+        root.resizable(False, False)
+        root.bind('<Escape>', lambda e: self.submit())
 
         def submit():
             global root
          
             password = password_var.get()
             ip = ip_var.get()
-            port=port_var.get()
+            port = port_var.get()
 
             try:
                 if  secure_login(ip, port, password):
                     root.destroy()
                     root2 = tk.Tk()
-                    root2.title =  "Tin Foil Chat"
+                    root2.title("Tin Foil Chat")
                     chat_app(root2)
 
                     while True:
@@ -153,8 +123,7 @@ class login_window():
                 print(e)
 
                 password_var.set("")
-                ip_var.set("")
-                port_var.set("")
+
 
         # setting the windows size
         root.geometry("250x100")
@@ -167,8 +136,6 @@ class login_window():
 
 
         # name using widget Label
-
-
         ip_label = tk.Label(root, text='ip', font=('calibre', 10, 'bold'))
         ip_entry = tk.Entry(root, textvariable= ip_var, font=('calibre', 10, 'normal'), )
         ip_entry.insert( 0,  "192.168.1.68")
@@ -179,7 +146,7 @@ class login_window():
         port_entry.insert(0, "1234")
 
         password_label = tk.Label(root, text = 'Password', font=('calibre',10, 'bold'))
-        password_entry = tk.Entry(root,textvariable = password_var, font=('calibre',10,'normal'))
+        password_entry = tk.Entry(root,textvariable = password_var, font=('calibre',10,'normal'), show="*")
         password_entry.insert(0, "blap")
 
 
@@ -210,7 +177,7 @@ if __name__ == "__main__":
 
     root = tk.Tk()
     login_window(root)
-    root.title('Tin Foil Chat')
+    root.title('Login')
 
     while True:
         root.mainloop()
