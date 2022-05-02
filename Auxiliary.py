@@ -1,10 +1,7 @@
 from datetime import datetime
-from RSA import PAD_LENGTH
 from hashlib import sha256
 from secrets import choice
-
-
-
+from RSA import PAD_LENGTH
 
 class user():
     global PAD_LENGTH
@@ -43,7 +40,7 @@ class user():
             message = int.from_bytes((message) , byteorder= "little")
             return pow(message, self.e, self.public_key)
 
-
+        # We makes freqency attacks not possibul.
         if pad == "":
             scramble = "abcdefghijklmpqrstuvwyxzABCDEFGHIJKLMNOPQRSTUVWYXYZ1234567890 !@#$%^&*()"
             for i in range(PAD_LENGTH):
@@ -54,7 +51,7 @@ class user():
         message = int(message.encode("utf-8").hex(), 16)
         return str(pow(message, self.e, self.public_key))
 
-    # cypher == String encyption
+    # Decrypt with the public key to verify if the signature matches the author
     def unsign(self, signature, trim_pad = True):
 
         if isinstance(signature, bytes):
@@ -71,17 +68,12 @@ class user():
                 return bytes.fromhex('{:x}'.format(signature)).decode()
 
         except UnicodeError:
-            print("UNICODE ERROR: possibul message was to long")
+            print("UNICODE ERROR, message may be too long or you tryed to decrypt with the wrong key")
 
-
-
-
-
-
-
+# Object will a relivent data for a message
 class message():
 
-        def __init__(self, content, flag , author, recipient ):
+        def __init__(self, content , flag ,author, recipient ):
             self.content = content
             self.flag = flag
             self.author = author
@@ -89,7 +81,7 @@ class message():
             self.time = datetime.timestamp(datetime.now())
 
 
-#string goes in hashed string goes out
+# String goes in hashed string goes out
 def hash_it(plain_str):
     if not isinstance(plain_str, str):
         plain_str = str(plain_str)
@@ -99,7 +91,7 @@ def hash_it(plain_str):
     hash.digest()
     return hash.hexdigest()
 
-# String to int
+
 def string_to_int( plain_text):
     return int(plain_text.encode().hex(), 16)
 

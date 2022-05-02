@@ -111,17 +111,17 @@ if __name__ == "__main__":
 
   server_RSA = RSA(1024)
 
-  #Password to connect to server
-  #server_password = input( "Server Password: ")
-  server_password = "blap"
+
+
+  ip = input("Local Ip: ")
+  port = input("Port: ")
+  server_password = input("Server Password: ")
   server_hash = hash_it(server_password)
 
-
-  #ip = input("Ip: ")
-  #port = input("Port: ")
-
-  port = 12340 + randint(0, 9)
-  ip = '192.168.1.68'
+  # Testing Parameters
+  #port = 12360 + randint(0, 9)
+  #ip = '192.168.1.87'
+  #server_password = "blap"
 
 
   sock.bind((ip, port))

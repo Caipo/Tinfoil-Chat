@@ -14,8 +14,6 @@ tea_green = "#D7EBBA"
 
 
 class chat_app:
-
-
     def ask_for_users(self):
         while True:
             get_users()
@@ -77,11 +75,11 @@ class chat_app:
         send_box.pack(side = "bottom", fill = "both", anchor = "s")
         self.send_box = send_box
 
-        def gui_send(event, seleced_user):
-            send_to(seleced_user, send_box.get())
+        def gui_send(event):
+            send_to( send_box.get())
             send_box.delete(0, tk.END)
 
-        root.bind('<Return>',  lambda e : gui_send( e,self.seleced_user))
+        root.bind('<Return>',  lambda e : gui_send( e))
 
         # Asks the server whoms online
         ask_users_thread = Thread(target=self.handle_data)
@@ -178,6 +176,10 @@ if __name__ == "__main__":
     root = tk.Tk()
     login_window(root)
     root.title('Login')
+
+    print("Generating RSA")
+    generate_RSA()
+    print("Done Generation")
 
     while True:
         root.mainloop()

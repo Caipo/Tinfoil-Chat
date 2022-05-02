@@ -1,13 +1,22 @@
 import socket
-import pickle as pk
 from Auxiliary import *
 from RSA import *
 
-
+my_RSA = ""
 sock = socket.socket()
 clients = set()
 current_user = ""
 server = ""
+
+def generate_RSA():
+    global my_RSA
+
+    if my_RSA == "":
+        my_RSA = RSA(2048)
+
+    else:
+        print("RSA already generated")
+
 
 
 
@@ -15,11 +24,17 @@ server = ""
 def secure_login(ip, port, server_password):
     global sock, clients, current_user, my_RSA, server
 
+    # See Read me for the theory
+
     # Create a socket object
     sock = socket.socket()
 
+    if my_RSA == "":
+        raise Exception("You didn't generate client RSA")
+
+
     print("Generating RSA")
-    my_RSA = RSA(1024)
+
 
 
     # Define the port on which you want to connect
@@ -31,17 +46,17 @@ def secure_login(ip, port, server_password):
 
     current_user = user("bloop",   my_RSA.public_key, sock)
 
-
+    # Phase 1 (key echange)
     print("Exchanging Keys")
-    #Phase 1 (key echange)
+
     server_public_key = int(sock.recv(2048).decode())#Getting server public key
     server = user("Server", server_public_key, sock) #Loding our info into object
     server.sock.sendall( str(my_RSA.public_key).encode() ) #Sending our public key
 
+
     #Phase 2 (Client Verifycation)
-
-
     print("Verifying to server")
+
     server.sock.sendall( str(server.encrypt( server_password + hash_it(my_RSA.public_key) ) ).encode())  #Sending the password with key hash
     ser_response = my_RSA.decrypt(  int(server.sock.recv(2048).decode('utf-8')) )
 
@@ -57,12 +72,11 @@ def secure_login(ip, port, server_password):
         return True
 
 
-def send_to(recipient, content):
+def send_to(content):
     global sock, current_user
     print("sending")
 
     #Reciving the encrypted data
-
     encrpted_message = str(server.encrypt( "<message>" + content) )
     sock.sendall(  (encrpted_message + ":" + str(my_RSA.sign( hash_it( "<message>"+ content)))).encode() )
 
@@ -86,16 +100,18 @@ def receive_data():
             else:
                 print("Message Authentication Failed")
 
+        # If there is no message, we don't do antyhing even though this line of code is pretty scarry.
         except IndexError:
             pass
 
-
+# We just send a message telling the server to give us an updated server log.
+# Come to think of it we could just have the server do it without asking which i may implement later
 def get_users():
     global current_user
     encrpted_message = str(server.encrypt("<users>"))
-    sock.sendall( (encrpted_message + ":" + str(my_RSA.sign(hash_it("<users>")))   ).encode())
+    sock.sendall( (encrpted_message + ":" + str(my_RSA.sign(hash_it("<users>")))).encode())
 
 
-
+# Used to test without a gui with my local ip
 if __name__ == "__main__":
     secure_login("192.168.1.68", int(str(1234) + input("port ")), input( "Password: ") )
