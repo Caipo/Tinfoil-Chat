@@ -68,7 +68,7 @@ Its worth going over the verification process becuase this is an algorithem that
 
 ## Example Chatt
 
-![alt text]([http://url/to/img.png](https://imgur.com/a/TtTwJ5h))
+![alt text]([https://imgur.com/a/TtTwJ5h])
 
 
 
