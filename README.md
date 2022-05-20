@@ -57,9 +57,18 @@ Its worth going over the verification process becuase this is an algorithem that
 * Codes messy and could use a clean up
 
 
+## Its not a bug its a feature 
+
+* Anytime someone joins they will unable to see the message's sent before joining, this has the benefit of not having your message history comprimised if someone suspicious joins.
+* All names are randomly generated and keys + names are genrated for each log in. This makes it so that a user doesnt trust the program too much with out adiquite verifycation.
+* Keys are not saved thus makeing any messages much harder to obtain if you log off. Some countries will hold you in contempt untill you provide the keys so this feature could put you in jail for life. 
 
 
 
+
+## Example Chatt
+
+![alt text]([http://url/to/img.png](https://imgur.com/a/TtTwJ5h))
 
 
 
