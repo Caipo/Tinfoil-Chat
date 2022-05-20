@@ -1,10 +1,5 @@
 # Tinfoil-Chat
-Simple chat app that uses military grade encryption (2048 bit RSA)
-
-
-## Scope 
-
-The intention of this project is to create an simple chat app that implemnts RSA purly from default python imports (no third party librarys).
+Simple chat app that uses military grade encryption (2048 bit RSA). Made completly from scrach python to serve as a message on the futility of banning encryption.
 
 
 ## Server set up
