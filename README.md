@@ -61,7 +61,7 @@ Its worth going over the verification process becuase this is an algorithem that
 
 
 
-## Example Chatt
+## Example Chat
 ![alt text](https://i.imgur.com/yAv1Ynx.png)
 
 
