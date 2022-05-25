@@ -1,3 +1,6 @@
+
+# Used for generating large primes
+
 #Credit https://gist.github.com/B45i/652e54adafa3aabed7518c6809ac24c0
 primes_list = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
 31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
@@ -1000,6 +1003,11 @@ primes_list = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
 104549, 104551, 104561, 104579, 104593, 104597, 104623, 104639, 104651, 104659,
 104677, 104681, 104683, 104693, 104701, 104707, 104711, 104717, 104723, 104729}
 
+
+
+
+
+# List for Randomly generated names
 #Credit https://pastebin.com/zAPTRcJE
 name_list = [
 "ability",

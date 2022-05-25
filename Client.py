@@ -2,11 +2,14 @@ import socket
 from Auxiliary import *
 from RSA import *
 
+# THIS FILE CONTAINS ALL THE NETWORK AND ENCRYPTION CODE TO WORK IN THE BACKGROUND OF THE CLINET
+
 my_RSA = ""
 sock = socket.socket()
 clients = set()
 current_user = ""
 server = ""
+
 
 def generate_RSA():
     global my_RSA
@@ -16,9 +19,6 @@ def generate_RSA():
 
     else:
         print("RSA already generated")
-
-
-
 
 
 def secure_login(ip, port, server_password):
@@ -112,6 +112,6 @@ def get_users():
     sock.sendall( (encrpted_message + ":" + str(my_RSA.sign(hash_it("<users>")))).encode())
 
 
-# Used to test without a gui with my local ip
+# Used to test logging in without a gui with my local ip
 if __name__ == "__main__":
     secure_login("192.168.1.68", int(str(1234) + input("port ")), input( "Password: ") )

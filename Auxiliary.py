@@ -3,6 +3,9 @@ from hashlib import sha256
 from secrets import choice
 from RSA import PAD_LENGTH
 
+# THIS FILE CONTAINS SHARED CLASSES AND USFUL MESSAGES TO BOTH CLIENT SIDE AND 
+# SERVER SIDE
+
 class user():
     global PAD_LENGTH
     def __init__(self, name, public_key, sock ):
@@ -40,7 +43,7 @@ class user():
             message = int.from_bytes((message) , byteorder= "little")
             return pow(message, self.e, self.public_key)
 
-        # We makes freqency attacks not possibul.
+        # Paddint stops someone from seeing if a message was sent more then once
         if pad == "":
             scramble = "abcdefghijklmpqrstuvwyxzABCDEFGHIJKLMNOPQRSTUVWYXYZ1234567890 !@#$%^&*()"
             for i in range(PAD_LENGTH):

@@ -4,7 +4,11 @@ from datetime import datetime
 from time import sleep
 import tkinter as tk
 
+#THIS FILE CONTAINS EVERTHING NEEDED FOR THE CLIENT GUT
 
+
+
+# Color Scheme for chat app
 gunmetal =  "#1B2432"
 bone =  "#DDDBCB"
 shiny_shamrock = "#61A886"
@@ -16,6 +20,7 @@ tea_green = "#D7EBBA"
 class chat_app:
     def ask_for_users(self):
         while True:
+            # We want to ask for a list of users
             get_users()
             sleep(5)
 
@@ -39,9 +44,11 @@ class chat_app:
         while True:
             data = receive_data()
 
+            # If data is a message sent it to update chat log
             if isinstance(data, message):
                 self.update_chat_log(data)
 
+            # If its a set of userse we want to add all of them to the side bar
             if isinstance(data, set):
                 self.update_users( data)
 
@@ -91,7 +98,7 @@ class chat_app:
 
 
 
-
+# This is the intial log in window
 class login_window():
 
     def __init__(self, root):
@@ -133,27 +140,27 @@ class login_window():
          
 
 
-        # name using widget Label
+        # IP box
         ip_label = tk.Label(root, text='ip', font=('calibre', 10, 'bold'))
         ip_entry = tk.Entry(root, textvariable= ip_var, font=('calibre', 10, 'normal'), )
         ip_entry.insert( 0,  "192.168.1.68")
 
-
+        # Port Box
         port_label = tk.Label(root, text = 'Port', font = ('calibre',10,'bold'))
         port_entry=tk.Entry(root, textvariable = port_var, font = ('calibre',10,'normal'))
         port_entry.insert(0, "1234")
 
+
+        # Password box
         password_label = tk.Label(root, text = 'Password', font=('calibre',10, 'bold'))
         password_entry = tk.Entry(root,textvariable = password_var, font=('calibre',10,'normal'), show="*")
         password_entry.insert(0, "blap")
 
 
-
+        # Enter Button
         sub_btn=tk.Button(root,text = 'Submit', command = submit)
           
         #Placing
-
-
         ip_label.grid(row=0,column=0)
         ip_entry.grid(row=0,column=1)
 
@@ -171,6 +178,7 @@ class login_window():
 
 
 
+# This is what we run when we want a client.
 if __name__ == "__main__":
 
     root = tk.Tk()
@@ -184,9 +192,4 @@ if __name__ == "__main__":
     while True:
         root.mainloop()
 
-    
 
-
-
-
-    

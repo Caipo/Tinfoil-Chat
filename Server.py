@@ -77,18 +77,21 @@ def get_message(client):
             print("NO signature found with ", client.name  )
             return
 
+            # These are flags that we handel the message
 
+          #The client wants users
           if "<users>" in decrypted_message:
             encrypted_message = str(client.encrypt( pickle.dumps(  set([x.name for x in clients] ) ) ))
             client.sock.sendall( (encrypted_message + ":" + str(server_RSA.sign(hash_it(encrypted_message)))).encode()  )
 
-
+          # The client closed
           elif "<close>" in decrypted_message:
               print(client.name, " Has Disconnecte")
               client.sock.close()
               clients.remove(client)
               return
 
+           # The client sent a message
           elif "<message>" in decrypted_message:
             for user in clients:
                 encrypted_message = str(client.encrypt( pickle.dumps(message( content = decrypted_message[9:], flag = "<message>", recipient="" ,author = client.name)  )))
@@ -103,6 +106,7 @@ def get_message(client):
           return
 
 
+#Heres where we run the server
 if __name__ == "__main__":
   #Opening connections
   sock = socket.socket()

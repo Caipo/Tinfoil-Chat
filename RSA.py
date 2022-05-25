@@ -4,6 +4,7 @@ from math import lcm
 from pickle import loads
 from lists import primes_list
 
+#How long the padding should be
 PAD_LENGTH = 10
 
 class RSA:
@@ -11,6 +12,8 @@ class RSA:
         
     def generate_key(self, bits):
         global p, q
+
+        # This is the famous miller rabin test for possibul prime
         def rabin(n):
             for k in range(64):
                 i  = 0
@@ -39,20 +42,25 @@ class RSA:
 
         while(True):
             is_prime = True
+
+            # We do 2 * random + 1 sp we dont get an even number which will clearly not be prime
             key = 2 * SystemRandom().randint( pow(2,bits - 1) //2  , pow(2,bits)//2  - 1)  + 1
 
+
+            # Using the fundelmental theorom of arthimatic to test if our key is prime
             for i in primes_list:
                 if( pow(key, 1 , i) == 0):
                     is_prime = False
                     break
-            
+
+            #Lastly we do miler rabin
             if(is_prime):
                 if( rabin(key) ):
                     return key
 
 
     def __init__(self, bits):
-
+        #Basic RSA 
         p = self.generate_key(bits)
         q = self.generate_key(bits)
 
@@ -110,7 +118,8 @@ class RSA:
             return bytes.fromhex('{:x}'.format(cypher)).decode('utf-8')
 
 
-
+    # RSA sign a message is just encrypting with the private key
+    # No one knows your private key so only you could have sign the message
     def sign(self, message, pad = ''):
         if not isinstance(message, str):
             message = str(message)
@@ -134,6 +143,8 @@ class RSA:
         return pad
 
 
+    
+    #Decrypting a signature with the public key
     def unsign(self, signature, trim_pad = True):
         if isinstance(signature, bytes):
             signature = signature.decode()
