@@ -1,6 +1,6 @@
 import socket
-from Auxiliary import *
-from RSA import *
+from auxiliary import *
+from rsa import *
 
 # THIS FILE CONTAINS ALL THE NETWORK AND ENCRYPTION CODE TO WORK IN THE BACKGROUND OF THE CLINET
 
@@ -32,10 +32,7 @@ def secure_login(ip, port, server_password):
     if my_RSA == "":
         raise Exception("You didn't generate client RSA")
 
-
     print("Generating RSA")
-
-
 
     # Define the port on which you want to connect
     port = int(port)
@@ -44,30 +41,27 @@ def secure_login(ip, port, server_password):
     # Connect to the server
     sock.connect((ip, port))
 
-    current_user = user("bloop",   my_RSA.public_key, sock)
+    current_user = user("bloop", my_RSA.public_key, sock)
 
     # Phase 1 (key echange)
     print("Exchanging Keys")
 
-    server_public_key = int(sock.recv(2048).decode())#Getting server public key
-    server = user("Server", server_public_key, sock) #Loding our info into object
-    server.sock.sendall( str(my_RSA.public_key).encode() ) #Sending our public key
+    server_public_key = int(sock.recv(2048).decode())  # Getting server public key
+    server = user("Server", server_public_key, sock)  # Loding our info into object
+    server.sock.sendall(str(my_RSA.public_key).encode())  # Sending our public key
 
-
-    #Phase 2 (Client Verifycation)
+    # Phase 2 (Client Verifycation)
     print("Verifying to server")
 
-    server.sock.sendall( str(server.encrypt( server_password + hash_it(my_RSA.public_key) ) ).encode())  #Sending the password with key hash
-    ser_response = my_RSA.decrypt(  int(server.sock.recv(2048).decode('utf-8')) )
+    server.sock.sendall(str(server.encrypt(
+        server_password + hash_it(my_RSA.public_key))).encode())  # Sending the password with key hash
+    ser_response = my_RSA.decrypt(int(server.sock.recv(2048).decode('utf-8')))
 
-
-    if not "Welcome To Tinfoil Chat" in  ser_response:
+    if not "Welcome To Tinfoil Chat" in ser_response:
         return False
 
-
-
     print("Sever verifing back")
-    if my_RSA.decrypt( int(server.sock.recv(2048).decode('utf-8'))) == server_password + hash_it(str(server_public_key)):
+    if my_RSA.decrypt(int(server.sock.recv(2048).decode('utf-8'))) == server_password + hash_it(str(server_public_key)):
         current_user = user(name=ser_response.split(" ")[-1], public_key=my_RSA.public_key, sock=sock)
         return True
 
@@ -76,11 +70,9 @@ def send_to(content):
     global sock, current_user
     print("sending")
 
-    #Reciving the encrypted data
-    encrpted_message = str(server.encrypt( "<message>" + content) )
-    sock.sendall(  (encrpted_message + ":" + str(my_RSA.sign( hash_it( "<message>"+ content)))).encode() )
-
-
+    # Reciving the encrypted data
+    encrpted_message = str(server.encrypt("<message>" + content))
+    sock.sendall((encrpted_message + ":" + str(my_RSA.sign(hash_it("<message>" + content)))).encode())
 
 
 def receive_data():
@@ -91,7 +83,7 @@ def receive_data():
         try:
             if hash_it(data[0]) == server.unsign(data[1]):
 
-                data = my_RSA.decrypt( data[0], is_object= True )
+                data = my_RSA.decrypt(data[0], is_object=True)
                 if isinstance(data, message):
                     return data
 
@@ -104,14 +96,15 @@ def receive_data():
         except IndexError:
             pass
 
+
 # We just send a message telling the server to give us an updated server log.
 # Come to think of it we could just have the server do it without asking which i may implement later
 def get_users():
     global current_user
     encrpted_message = str(server.encrypt("<users>"))
-    sock.sendall( (encrpted_message + ":" + str(my_RSA.sign(hash_it("<users>")))).encode())
+    sock.sendall((encrpted_message + ":" + str(my_RSA.sign(hash_it("<users>")))).encode())
 
 
 # Used to test logging in without a gui with my local ip
 if __name__ == "__main__":
-    secure_login("192.168.1.68", int(str(1234) + input("port ")), input( "Password: ") )
+    secure_login("192.168.1.68", int(str(1234) + input("port ")), input("Password: "))

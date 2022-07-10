@@ -1,7 +1,6 @@
 from datetime import datetime
 from hashlib import sha256
 from secrets import choice
-from RSA import PAD_LENGTH
 
 # THIS FILE CONTAINS SHARED CLASSES AND USFUL MESSAGES TO BOTH CLIENT SIDE AND 
 # SERVER SIDE
