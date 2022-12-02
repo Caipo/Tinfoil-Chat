@@ -4,7 +4,7 @@ from secrets import choice
 
 # THIS FILE CONTAINS SHARED CLASSES AND USFUL MESSAGES TO BOTH CLIENT SIDE AND 
 # SERVER SIDE
-
+PAD_LENGTH = 10
 class user():
     global PAD_LENGTH
     def __init__(self, name, public_key, sock ):
@@ -37,7 +37,7 @@ class user():
 
     #String -> Encypted int
     def encrypt(self, message, pad = ''):
-
+        global PAD_LENGTH
         if isinstance(message, bytes):
             message = int.from_bytes((message) , byteorder= "little")
             return pow(message, self.e, self.public_key)

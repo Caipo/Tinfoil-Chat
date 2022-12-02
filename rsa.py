@@ -3,6 +3,8 @@ from random import randint
 from math import lcm
 from pickle import loads
 from lists import primes_list
+from dotenv import load_dotenv
+import os
 
 #How long the padding should be
 PAD_LENGTH = 10
@@ -55,22 +57,33 @@ class RSA:
 
             #Lastly we do miler rabin
             if(is_prime):
-                if( rabin(key) ):
+                if(rabin(key)):
                     return key
 
 
-    def __init__(self, bits):
-        #Basic RSA 
-        p = self.generate_key(bits)
-        q = self.generate_key(bits)
+    def __init__(self, bits, from_env = False ):
+        
+        if from_env:
+            print('loading env')
+            load_dotenv()
+            self.d =int(os.getenv("D"))
+            self.e = int(os.getenv("E"))
+            self.public_key = int(os.getenv('PUBLIC_KEY'))
+    
+        else:
+            #Basic RSA 
+            p = self.generate_key(bits)
+            q = self.generate_key(bits)
 
-        self.public_key  = p*q
-        private = lcm(p -1, q - 1)
-        
-        
-        self.e = pow(2,16) + 1
-        self.d = pow(self.e, -1,  private)
-        del p, q, private
+            self.public_key  = p*q
+            private = lcm(p -1, q - 1)
+            
+            
+            self.e = pow(2,16) + 1
+            self.d = pow(self.e, -1,  private)
+            del p, q, private
+
+
 
 
     # String goes in encrypted int goes out
@@ -96,7 +109,7 @@ class RSA:
 
     #Encrypted int goes in String goes out
     def decrypt(self, cypher, trim_pad = True, is_object = False):
-
+        global PAD_LENGTH
         if is_object:
 
             cypher = pow( int(cypher), self.d, self.public_key)
@@ -121,6 +134,7 @@ class RSA:
     # RSA sign a message is just encrypting with the private key
     # No one knows your private key so only you could have sign the message
     def sign(self, message, pad = ''):
+        global PAD_LENGTH
         if not isinstance(message, str):
             message = str(message)
 
@@ -136,6 +150,7 @@ class RSA:
 
 
     def gen_pad(self):
+        global PAD_LENGTH
         scramble = "abcdefghijklmpqrstuvwyxzABCDEFGHIJKLMNOPQRSTUVWYXYZ1234567890 !@#$%^&*()"
         pad = ''
         for i in range(PAD_LENGTH):
@@ -162,13 +177,6 @@ class RSA:
         except UnicodeError:
             print("UNICODE ERROR: possibul message was to long")
 
-
-
-
-        
-
-
-    
 
 # If you want to see how the encryption works
 if __name__ == "__main__":

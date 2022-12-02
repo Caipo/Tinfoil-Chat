@@ -19,7 +19,8 @@ def main():
     sock = socket.socket()
     print("Generating rsa")
 
-    host_name = socket.getfqdn()
+    #host_name = socket.getfqdn()
+    host_name = socket.gethostname()
     ip = socket.gethostbyname_ex(host_name)[2][0]
     port = int(input("Port: "))
     server_password = input("Server Password: ")
@@ -142,6 +143,5 @@ def get_message(client):
             return
 
 
-# Here's where we run the server
 if __name__ == "__main__":
     main()

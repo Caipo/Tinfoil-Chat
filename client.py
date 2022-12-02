@@ -10,15 +10,24 @@ clients = set()
 current_user = ""
 server = ""
 
-
 def generate_RSA():
     global my_RSA
 
-    if my_RSA == "":
-        my_RSA = RSA(2048)
+    if os.path.exists('.env'):
+        print('generating key')
+        my_RSA = RSA(2048, True)
 
     else:
-        print("RSA already generated")
+        print('Loading keys')
+        my_RSA = RSA(2048)
+
+        with  open('.env', 'w') as file:
+            file.write(f'D = "{my_RSA.d}"\n') 
+            file.write(f'E = "{my_RSA.e}"\n') 
+            file.write(f'PUBLIC_KEY = "{my_RSA.public_key}"') 
+        file.close()
+
+    return my_RSA
 
 
 def secure_login(ip, port, server_password):
@@ -95,8 +104,6 @@ def receive_data():
         # If there is no message, we don't do antyhing even though this line of code is pretty scarry.
         except IndexError:
             pass
-
-
 # We just send a message telling the server to give us an updated server log.
 # Come to think of it we could just have the server do it without asking which i may implement later
 def get_users():

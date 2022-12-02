@@ -3,8 +3,7 @@ from threading import Thread
 from datetime import datetime
 from time import sleep
 import tkinter as tk
-
-# THIS FILE CONTAINS EVERYTHING NEEDED FOR THE CLIENT GUI
+from dotenv import load_dotenv 
 
 # Color Scheme for chat app
 gunmetal = "#1B2432"
@@ -13,11 +12,11 @@ shiny_shamrock = "#61A886"
 dark_liver = "#403F4C"
 tea_green = "#D7EBBA"
 
-
 def main():
     root = tk.Tk()
     LoginWindow(root)
     root.title('Login')
+
 
     print("Generating RSA")
     generate_RSA()
@@ -26,9 +25,7 @@ def main():
     while True:
         root.mainloop()
 
-
 class ChatApp:
-
     @staticmethod
     def ask_for_users():
         while True:
@@ -40,9 +37,9 @@ class ChatApp:
         global clients
         if isinstance(new_list, set):
             if new_list != clients:
-                self.userbox.delete(0, tk.END)
+                self.user_box.delete(0, tk.END)
                 for idx, val in enumerate(new_list):
-                    self.userbox.insert(idx + 1, val)
+                    self.user_box.insert(idx + 1, val)
                     clients = new_list
 
     def update_chat_log(self, new_msg):
@@ -108,36 +105,31 @@ class ChatApp:
         # Keeps getting the data from the server and handles it
         handle_data = Thread(target=self.ask_for_users)
         handle_data.start()
-
-
+        
 # This is the initial log in window
 class LoginWindow():
-
     def __init__(self, root):
         self.root = root
-
         root.resizable(False, False)
         root.bind('<Escape>', lambda e: self.submit())
 
         def submit():
-            global root
-
             password = password_var.get()
             ip = ip_var.get()
             port = port_var.get()
 
-            try:
-                if secure_login(ip, port, password):
-                    root.destroy()
-                    root2 = tk.Tk()
-                    root2.title("Tin Foil Chat")
-                    ChatApp(root2)
 
-                    while True:
-                        root2.mainloop()
+            if secure_login(ip, port, password):
+                root.destroy()
+                root2 = tk.Tk()
+                root2.title("Tin Foil Chat")
+                ChatApp(root2)
 
-            except Exception as e:
-                print(e)
+                while True:
+                    root2.mainloop()
+
+            #except Exception as e:
+            #    print(e)
 
                 password_var.set("")
 
@@ -180,9 +172,7 @@ class LoginWindow():
         sub_btn.grid(row=3, column=1)
 
         def on_closing(event=None):
-            exit()
+            exit() 
 
-
-# This is what we run when we want a client.
 if __name__ == "__main__":
     main()
