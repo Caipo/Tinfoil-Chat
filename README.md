@@ -7,6 +7,16 @@ Simple chat app that uses encryption (2048 bit RSA). Made completly from scrach 
 
 This was a project make in my spare time to create all the aspects of an encrypted platform from scratch. This of course taught me a lot about, optimization, security, networking and GUI's. This is not however sufficient to stop anyone who knows what there doing from compromising your messages.
 
+## Requirements 
+Python 3.10
+
+These should all be default
+
+dotenv 
+pickle
+tinkter
+socket
+
 
 ## Server set up
 
