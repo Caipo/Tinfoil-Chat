@@ -2,6 +2,9 @@
 Simple chat app that uses military grade encryption (2048 bit RSA). Made completly from scrach python to serve as a message on the futility of banning encryption.
 
 
+# <-- EDUCATIONAL USE ONLY -->
+
+
 ## Server set up
 
 1) Run the server file.
