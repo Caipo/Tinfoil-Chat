@@ -4,6 +4,8 @@ Simple chat app that uses encryption (2048 bit RSA). Made completly from scrach 
 
 # <-- EDUCATIONAL USE ONLY -->
 
+This was a project make in my spare time to try and create all the aspects of an encrypted platform from scratch. This of course taught me a lot about, optimization, security, networking and GUI's. This is not however sufficient to stop anyone who knows what there doing from compromising your messages. 
+
 
 ## Server set up
 
@@ -45,7 +47,7 @@ Its worth going over the verification process becuase this is an algorithem that
 * If the client or server loses their public keys its possibul to falseify messages. 
 * RSA uses prime numbers in a certain range so its possibul to generate a ton of keys and mass attack cyphers.
 * This code is not secure against timing attacks.
-* <b> THIS IS TEXT BOOK RSA WHICH IS NOT SUFFICENT FOR ANYTHING IMPORTANT <\b>
+* <b> THIS IS TEXT BOOK RSA WHICH IS NOT SUFFICENT FOR ANYTHING IMPORTANT 
 * The encryption key is the same as the signing key, which is a big no no.
 
 
