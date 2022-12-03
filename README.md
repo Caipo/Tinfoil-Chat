@@ -44,8 +44,9 @@ Its worth going over the verification process becuase this is an algorithem that
 * The client uses the pickel library "It is possible to construct malicious pickle data which will execute arbitrary code during unpickling. Never unpickle data that could have come from an untrusted source, or that could have been tampered with."
 * If the client or server loses their public keys its possibul to falseify messages. 
 * RSA uses prime numbers in a certain range so its possibul to generate a ton of keys and mass attack cyphers.
-* RSA is not quantum secure (If this is your problem I think you have bigger things to worry about.)
 * This code is not secure against timing attacks.
+* # THIS IS TEXT BOOK RSA WHICH IS NOT SUFFICENT FOR ANYTHING IMPORTANT
+* The encryption key is the same as the signing key, which is a big no no.
 
 
 ## To Do
