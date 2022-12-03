@@ -1,10 +1,11 @@
 # Tinfoil-Chat
 Simple chat app that uses encryption (2048 bit RSA). Made completly from scrach python to serve as a message on the futility of banning encryption.
+      Cancel changes
 
 
 # <-- EDUCATIONAL USE ONLY -->
 
-This was a project make in my spare time to try and create all the aspects of an encrypted platform from scratch. This of course taught me a lot about, optimization, security, networking and GUI's. This is not however sufficient to stop anyone who knows what there doing from compromising your messages. 
+This was a project make in my spare time to create all the aspects of an encrypted platform from scratch. This of course taught me a lot about, optimization, security, networking and GUI's. This is not however sufficient to stop anyone who knows what there doing from compromising your messages.
 
 
 ## Server set up
