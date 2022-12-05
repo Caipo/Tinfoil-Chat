@@ -1,6 +1,5 @@
 # Tinfoil-Chat
-Simple chat app that uses encryption (2048 bit RSA). Made completly from scrach python to serve as a message on the futility of banning encryption.
-      Cancel changes
+Simple chat app that uses 2048 bit RSA encryption. Everything is made from scratch python and should be a good first example for someone who wants to start learning about encryption, gui's or networking.
 
 
 # <-- EDUCATIONAL USE ONLY -->
@@ -67,6 +66,9 @@ Its worth going over the verification process becuase this is an algorithem that
 * Maybe make a branch with AES insted of RSA because were already require a password, so RSA is far from ideal when made worse by the fact that python is not a fast language. 
 * Find a better solution than useing pickle because its really not a good idea. We the risk with signature verifycation, but its still not a good idea.
 * Codes messy and could use a clean up
+* Make the signing key diffrent from the encryption key.
+* Try to adress the timeing attack problem
+* Write code to detect if the .env is not fully generated, and to redo it. (If the proceses doesnt compleate it will screw things up)
 
 
 ## Its not a bug its a feature 
