@@ -1,6 +1,6 @@
 import socket
-from auxiliary import *
-from rsa import *
+from backend.auxiliary import *
+from backend.rsa import *
 
 # THIS FILE CONTAINS ALL THE NETWORK AND ENCRYPTION CODE TO WORK IN THE BACKGROUND OF THE CLINET
 

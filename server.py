@@ -2,10 +2,10 @@ import socket
 import pickle
 from threading import Thread, Lock
 from time import sleep
-from auxiliary import *
-from rsa import *
+from backend.auxiliary import *
+from backend.rsa import *
 from secrets import randbelow, choice
-from lists import name_list
+from backend.lists import name_list
 
 server_RSA = RSA(1024)
 server_hash = ""

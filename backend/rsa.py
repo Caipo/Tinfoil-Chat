@@ -2,7 +2,7 @@ from secrets import SystemRandom, choice
 from random import randint
 from math import lcm
 from pickle import loads
-from lists import primes_list
+from backend.lists import primes_list
 from dotenv import load_dotenv
 import os
 

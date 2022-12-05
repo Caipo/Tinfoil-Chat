@@ -1,4 +1,4 @@
-from client import *
+from backend.client import *
 from threading import Thread
 from datetime import datetime
 from time import sleep
